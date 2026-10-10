@@ -6,6 +6,7 @@
         ...(\App\Models\Certificate::anyPublished() ? [['route' => 'certificates', 'label' => __('site.nav.certificates'), 'active' => 'certificates']] : []),
         ...(\App\Models\Employee::pageIsAvailable() ? [['route' => 'who-is-who', 'label' => __('site.nav.who_is_who'), 'active' => 'who-is-who']] : []),
         ['route' => 'posts.index', 'label' => __('site.nav.news'), 'active' => 'posts.*'],
+        ...(\App\Models\Vacancy::anyPublished() ? [['route' => 'vacancies.index', 'label' => __('site.nav.vacancies'), 'active' => 'vacancies.*']] : []),
         ['route' => 'contact', 'label' => __('site.nav.contact'), 'active' => 'contact'],
     ];
 @endphp
@@ -20,7 +21,7 @@
             </span>
         </a>
 
-        <nav class="hidden items-center gap-6 lg:flex" aria-label="{{ __('site.nav.main') }}">
+        <nav class="hidden items-center gap-5 lg:flex" aria-label="{{ __('site.nav.main') }}">
             @foreach ($links as $link)
                 <a href="{{ route($link['route']) }}"
                    @class([

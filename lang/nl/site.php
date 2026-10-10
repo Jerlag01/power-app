@@ -2,6 +2,7 @@
 
 return [
     'nav' => [
+        'vacancies' => 'Vacatures',
         'who_is_who' => 'Wie is wie',
         'certificates' => 'Certificaten',
         'home' => 'Home',
@@ -145,5 +146,38 @@ return [
         'rights_contact' => 'Contacteer ons hiervoor via :via.',
         'contact_form' => 'het contactformulier',
         'authority' => 'U kunt ook klacht indienen bij de Gegevensbeschermingsautoriteit (www.gegevensbeschermingsautoriteit.be).',
+    ],
+    'vacancies' => [
+        'label' => 'Werken bij ons',
+        'page_title' => 'Bouw mee aan onze projecten',
+        'page_intro' => 'We zoeken gemotiveerde collega\'s die met ons mee willen groeien. Bekijk onze openstaande vacatures en solliciteer rechtstreeks online.',
+        'read_more' => 'Bekijk de vacature',
+        'back' => 'Alle vacatures',
+        'location' => 'Locatie',
+        'employment_type' => 'Type contract',
+        'closes_at' => 'Solliciteren tot',
+        'apply_now' => 'Solliciteer nu',
+        'sections' => [
+            'description' => 'Functieomschrijving',
+            'requirements' => 'Jouw profiel',
+            'offer' => 'Wat wij bieden',
+        ],
+        'pictures' => 'Foto\'s bij :title',
+        'picture_alt' => ':title - foto :number',
+        'contact_title' => 'Vragen over deze vacature?',
+        'form_title' => 'Solliciteer voor deze functie',
+        'fields' => [
+            'cv' => 'Je cv',
+            'message' => 'Waarom wil je bij ons werken?',
+        ],
+        'cv_help' => 'PDF of Word, maximaal 10 MB.',
+        'privacy_consent' => 'Ik ga ermee akkoord dat mijn gegevens en cv worden gebruikt om mijn sollicitatie te behandelen, volgens de :link.',
+        'submit' => 'Sollicitatie versturen',
+        'success' => 'Bedankt voor je sollicitatie! We nemen zo snel mogelijk contact met je op.',
+        'other' => 'Andere vacatures',
+        'validation' => [
+            'cv_type' => 'Je cv moet een PDF- of Word-bestand zijn.',
+            'cv_size' => 'Je cv mag maximaal 10 MB groot zijn.',
+        ],
     ],
 ];

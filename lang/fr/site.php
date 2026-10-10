@@ -2,6 +2,7 @@
 
 return [
     'nav' => [
+        'vacancies' => 'Emplois',
         'who_is_who' => 'Qui est qui',
         'certificates' => 'Certificats',
         'home' => 'Accueil',
@@ -145,5 +146,38 @@ return [
         'rights_contact' => 'Contactez-nous pour cela via :via.',
         'contact_form' => 'le formulaire de contact',
         'authority' => 'Vous pouvez également introduire une plainte auprès de l\'Autorité de protection des données (www.autoriteprotectiondonnees.be).',
+    ],
+    'vacancies' => [
+        'label' => 'Travailler chez nous',
+        'page_title' => 'Construisez nos projets avec nous',
+        'page_intro' => 'Nous recherchons des collègues motivés qui veulent grandir avec nous. Découvrez nos offres d\'emploi et postulez directement en ligne.',
+        'read_more' => 'Voir l\'offre',
+        'back' => 'Toutes les offres',
+        'location' => 'Lieu',
+        'employment_type' => 'Type de contrat',
+        'closes_at' => 'Postuler jusqu\'au',
+        'apply_now' => 'Postuler',
+        'sections' => [
+            'description' => 'Description de la fonction',
+            'requirements' => 'Votre profil',
+            'offer' => 'Notre offre',
+        ],
+        'pictures' => 'Photos : :title',
+        'picture_alt' => ':title - photo :number',
+        'contact_title' => 'Des questions sur cette offre ?',
+        'form_title' => 'Postuler pour cette fonction',
+        'fields' => [
+            'cv' => 'Votre CV',
+            'message' => 'Pourquoi voulez-vous travailler chez nous ?',
+        ],
+        'cv_help' => 'PDF ou Word, 10 Mo maximum.',
+        'privacy_consent' => 'J\'accepte que mes données et mon CV soient utilisés pour traiter ma candidature, conformément à la :link.',
+        'submit' => 'Envoyer ma candidature',
+        'success' => 'Merci pour votre candidature ! Nous vous contacterons dès que possible.',
+        'other' => 'Autres offres',
+        'validation' => [
+            'cv_type' => 'Votre CV doit être un fichier PDF ou Word.',
+            'cv_size' => 'Votre CV ne peut pas dépasser 10 Mo.',
+        ],
     ],
 ];

@@ -35,6 +35,8 @@ return [
             'certificates' => 'Certificaten',
             'footer_links' => 'Footerlinks',
             'employees' => 'Wie is wie',
+            'vacancies' => 'Vacatures',
+            'job_applications' => 'Sollicitaties',
             'posts' => 'Nieuws',
             'projects' => 'Realisaties',
             'expertises' => 'Expertises',

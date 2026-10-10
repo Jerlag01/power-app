@@ -1,0 +1,55 @@
+<?php
+
+return [
+    'resource' => ['singular' => 'vacature', 'plural' => 'Vacatures', 'singular_title' => 'Vacature'],
+    'applications' => ['singular' => 'sollicitatie', 'plural' => 'Sollicitaties'],
+    'employment_types' => [
+        'full_time' => 'Voltijds',
+        'part_time' => 'Deeltijds',
+        'temporary' => 'Tijdelijk',
+        'student' => 'Studentenjob',
+        'internship' => 'Stage',
+        'freelance' => 'Freelance',
+    ],
+    'sections' => [
+        'contact' => 'Contactpersoon',
+        'applications' => 'Sollicitaties',
+        'candidate' => 'Kandidaat',
+    ],
+    'fields' => [
+        'title' => 'Functietitel',
+        'intro' => 'Korte omschrijving',
+        'description' => 'Functieomschrijving',
+        'requirements' => 'Profiel / vereisten',
+        'offer' => 'Wat wij bieden',
+        'image' => 'Hoofdfoto',
+        'employment_type' => 'Type contract',
+        'closes_at' => 'Solliciteren tot',
+        'no_deadline' => 'Geen einddatum',
+        'notify_emails' => 'Sollicitaties versturen naar',
+        'motivation' => 'Motivatie',
+        'cv' => 'Cv',
+    ],
+    'help' => [
+        'intro' => 'Eén of twee zinnen voor het overzicht en zoekmachines.',
+        'offer' => 'Optioneel: loon, voordelen, opleidingen, …',
+        'images' => 'Extra foto\'s van de werkplek, de ploeg of projecten. Max. 12, JPG/PNG/WebP tot 4 MB. Sleep om de volgorde te wijzigen.',
+        'image' => 'Getoond op de kaart in het overzicht en achter de titel. Leeg = logo.',
+        'contact' => 'Getoond naast de vacature. Leeg = het algemene telefoonnummer en e-mailadres van de website.',
+        'notify_emails' => 'Elk adres krijgt de sollicitatie met het cv als bijlage. Druk op Enter na elk adres. Leeg = de adressen bij Website-instellingen > Contactgegevens.',
+        'visible' => 'Verborgen of afgesloten vacatures verschijnen niet op de website. Zonder zichtbare vacatures verdwijnt ook de link "Vacatures".',
+        'closes_at' => 'Na deze datum verdwijnt de vacature automatisch van de website. Leeg = geen einddatum.',
+        'slug' => 'Deel van het webadres, bv. /nl/vacancies/elektricien. Enkel kleine letters, cijfers en koppeltekens.',
+        'closed' => 'Afgesloten: niet meer zichtbaar op de website.',
+        'empty' => 'Nog geen vacatures',
+        'empty_description' => 'Zodra er een zichtbare vacature is, verschijnt "Vacatures" in het menu van de website.',
+        'no_applications' => 'Nog geen sollicitaties',
+    ],
+    'actions' => [
+        'download_cv' => 'Cv downloaden',
+    ],
+    'settings' => [
+        'vacancy_emails' => 'Sollicitaties versturen naar',
+        'vacancy_emails_help' => 'Standaardadressen voor sollicitaties, voor vacatures zonder eigen adressen. Druk op Enter na elk adres. Leeg = het adres van het contactformulier.',
+    ],
+];

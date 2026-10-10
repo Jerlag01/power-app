@@ -13,6 +13,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
@@ -304,6 +305,13 @@ class Settings extends Page
                         ->helperText(__('admin.settings.help.notify_email'))
                         ->email()
                         ->maxLength(150),
+                    TagsInput::make('contact.vacancy_emails')
+                        ->label(__('vacancies.settings.vacancy_emails'))
+                        ->helperText(__('vacancies.settings.vacancy_emails_help'))
+                        ->placeholder('naam@bedrijf.be')
+                        ->splitKeys(['Tab', ',', ' ', ';'])
+                        ->nestedRecursiveRules(['email', 'max:150'])
+                        ->columnSpanFull(),
                 ]),
             TranslatableTabs::make(fn (string $locale, bool $isDefault): array => [
                 Grid::make(2)->schema([

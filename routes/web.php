@@ -4,6 +4,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\VacancyController;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,12 @@ Route::prefix('{locale}')
 
         Route::get('/news', [PostController::class, 'index'])->name('posts.index');
         Route::get('/news/{post}', [PostController::class, 'show'])->name('posts.show');
+
+        Route::get('/vacancies', [VacancyController::class, 'index'])->name('vacancies.index');
+        Route::get('/vacancies/{vacancy}', [VacancyController::class, 'show'])->name('vacancies.show');
+        Route::post('/vacancies/{vacancy}', [VacancyController::class, 'apply'])
+            ->middleware('throttle:5,1')
+            ->name('vacancies.apply');
 
         Route::get('/contact', [ContactController::class, 'show'])->name('contact');
         Route::post('/contact', [ContactController::class, 'store'])

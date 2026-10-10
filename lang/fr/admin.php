@@ -35,6 +35,8 @@ return [
             'certificates' => 'Certificats',
             'footer_links' => 'Liens de pied de page',
             'employees' => 'Qui est qui',
+            'vacancies' => 'Offres d\'emploi',
+            'job_applications' => 'Candidatures',
             'posts' => 'Actualités',
             'projects' => 'Réalisations',
             'expertises' => 'Expertises',

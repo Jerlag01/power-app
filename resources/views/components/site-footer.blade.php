@@ -43,6 +43,9 @@
                     <li><a href="{{ route('who-is-who') }}" class="hover:text-accent">{{ __('site.nav.who_is_who') }}</a></li>
                 @endif
                 <li><a href="{{ route('posts.index') }}" class="hover:text-accent">{{ __('site.nav.news') }}</a></li>
+                @if (\App\Models\Vacancy::anyPublished())
+                    <li><a href="{{ route('vacancies.index') }}" class="hover:text-accent">{{ __('site.nav.vacancies') }}</a></li>
+                @endif
                 <li><a href="{{ route('contact') }}" class="hover:text-accent">{{ __('site.nav.contact') }}</a></li>
                 <li><a href="{{ route('privacy') }}" class="hover:text-accent">{{ __('site.privacy.title') }}</a></li>
             </ul>

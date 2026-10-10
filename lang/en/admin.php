@@ -35,6 +35,8 @@ return [
             'certificates' => 'Certificates',
             'footer_links' => 'Footer links',
             'employees' => 'Who is who',
+            'vacancies' => 'Vacancies',
+            'job_applications' => 'Applications',
             'posts' => 'News',
             'projects' => 'Projects',
             'expertises' => 'Expertise',

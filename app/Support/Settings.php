@@ -76,6 +76,7 @@ class Settings
                     'en' => 'Brussels, Flanders and Wallonia',
                 ],
                 'notify_email' => null,
+                'vacancy_emails' => [],
                 'social' => [
                     'instagram' => null,
                     'facebook' => null,

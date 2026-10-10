@@ -2,6 +2,7 @@
 
 return [
     'nav' => [
+        'vacancies' => 'Jobs',
         'who_is_who' => 'Who is who',
         'certificates' => 'Certificates',
         'home' => 'Home',
@@ -145,5 +146,38 @@ return [
         'rights_contact' => 'Contact us via :via to do so.',
         'contact_form' => 'the contact form',
         'authority' => 'You can also lodge a complaint with the Belgian Data Protection Authority (www.dataprotectionauthority.be).',
+    ],
+    'vacancies' => [
+        'label' => 'Work with us',
+        'page_title' => 'Help us build our projects',
+        'page_intro' => 'We are looking for motivated colleagues who want to grow with us. Browse our open positions and apply directly online.',
+        'read_more' => 'View vacancy',
+        'back' => 'All vacancies',
+        'location' => 'Location',
+        'employment_type' => 'Contract type',
+        'closes_at' => 'Apply until',
+        'apply_now' => 'Apply now',
+        'sections' => [
+            'description' => 'Job description',
+            'requirements' => 'Your profile',
+            'offer' => 'What we offer',
+        ],
+        'pictures' => 'Photos: :title',
+        'picture_alt' => ':title - photo :number',
+        'contact_title' => 'Questions about this vacancy?',
+        'form_title' => 'Apply for this position',
+        'fields' => [
+            'cv' => 'Your CV',
+            'message' => 'Why do you want to work with us?',
+        ],
+        'cv_help' => 'PDF or Word, 10 MB maximum.',
+        'privacy_consent' => 'I agree that my details and CV are used to process my application, in accordance with the :link.',
+        'submit' => 'Send application',
+        'success' => 'Thank you for your application! We will contact you as soon as possible.',
+        'other' => 'Other vacancies',
+        'validation' => [
+            'cv_type' => 'Your CV must be a PDF or Word file.',
+            'cv_size' => 'Your CV may not be larger than 10 MB.',
+        ],
     ],
 ];

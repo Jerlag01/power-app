@@ -54,7 +54,9 @@ class RoleFactory extends Factory
             'expertises' => ['view', 'create', 'update', 'delete'],
             'clients' => ['view', 'create', 'update', 'delete'],
             'certificates' => ['view', 'create', 'update', 'delete'],
+            'vacancies' => ['view', 'create', 'update', 'delete'],
             'contact_messages' => ['view', 'update', 'delete'],
+            'job_applications' => ['view', 'update', 'delete'],
         ]);
     }
 }

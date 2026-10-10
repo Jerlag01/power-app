@@ -1,0 +1,55 @@
+<?php
+
+return [
+    'resource' => ['singular' => 'offre d\'emploi', 'plural' => 'Offres d\'emploi', 'singular_title' => 'Offre d\'emploi'],
+    'applications' => ['singular' => 'candidature', 'plural' => 'Candidatures'],
+    'employment_types' => [
+        'full_time' => 'Temps plein',
+        'part_time' => 'Temps partiel',
+        'temporary' => 'Temporaire',
+        'student' => 'Job étudiant',
+        'internship' => 'Stage',
+        'freelance' => 'Indépendant',
+    ],
+    'sections' => [
+        'contact' => 'Personne de contact',
+        'applications' => 'Candidatures',
+        'candidate' => 'Candidat',
+    ],
+    'fields' => [
+        'title' => 'Intitulé du poste',
+        'intro' => 'Description courte',
+        'description' => 'Description de la fonction',
+        'requirements' => 'Profil / exigences',
+        'offer' => 'Notre offre',
+        'image' => 'Photo principale',
+        'employment_type' => 'Type de contrat',
+        'closes_at' => 'Postuler jusqu\'au',
+        'no_deadline' => 'Pas de date limite',
+        'notify_emails' => 'Envoyer les candidatures à',
+        'motivation' => 'Motivation',
+        'cv' => 'CV',
+    ],
+    'help' => [
+        'intro' => 'Une ou deux phrases pour l\'aperçu et les moteurs de recherche.',
+        'offer' => 'Optionnel : salaire, avantages, formations, …',
+        'images' => 'Photos du lieu de travail, de l\'équipe ou de projets. Max. 12, JPG/PNG/WebP jusqu\'à 4 Mo. Glissez pour changer l\'ordre.',
+        'image' => 'Affichée sur la carte de l\'aperçu et derrière le titre. Vide = logo.',
+        'contact' => 'Affiché à côté de l\'offre. Vide = le téléphone et l\'e-mail généraux du site.',
+        'notify_emails' => 'Chaque adresse reçoit la candidature avec le CV en pièce jointe. Appuyez sur Entrée après chaque adresse. Vide = les adresses de Paramètres du site > Coordonnées.',
+        'visible' => 'Les offres masquées ou clôturées n\'apparaissent pas sur le site. Sans offre visible, le lien « Emplois » disparaît aussi.',
+        'closes_at' => 'Après cette date, l\'offre disparaît automatiquement du site. Vide = pas de date limite.',
+        'slug' => 'Partie de l\'adresse web, p.ex. /fr/vacancies/electricien. Uniquement minuscules, chiffres et traits d\'union.',
+        'closed' => 'Clôturée : plus visible sur le site.',
+        'empty' => 'Pas encore d\'offres d\'emploi',
+        'empty_description' => 'Dès qu\'une offre est visible, « Emplois » apparaît dans le menu du site.',
+        'no_applications' => 'Pas encore de candidatures',
+    ],
+    'actions' => [
+        'download_cv' => 'Télécharger le CV',
+    ],
+    'settings' => [
+        'vacancy_emails' => 'Envoyer les candidatures à',
+        'vacancy_emails_help' => 'Adresses par défaut pour les candidatures, pour les offres sans adresses propres. Appuyez sur Entrée après chaque adresse. Vide = l\'adresse du formulaire de contact.',
+    ],
+];

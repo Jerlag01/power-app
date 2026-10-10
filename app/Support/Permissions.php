@@ -16,6 +16,8 @@ class Permissions
         'certificates' => ['view', 'create', 'update', 'delete'],
         'footer_links' => ['view', 'create', 'update', 'delete'],
         'employees' => ['view', 'create', 'update', 'delete'],
+        'vacancies' => ['view', 'create', 'update', 'delete'],
+        'job_applications' => ['view', 'update', 'delete'],
         'contact_messages' => ['view', 'update', 'delete'],
         'users' => ['view', 'create', 'update', 'delete'],
         'roles' => ['view', 'create', 'update', 'delete'],

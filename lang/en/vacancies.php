@@ -1,0 +1,55 @@
+<?php
+
+return [
+    'resource' => ['singular' => 'vacancy', 'plural' => 'Vacancies', 'singular_title' => 'Vacancy'],
+    'applications' => ['singular' => 'application', 'plural' => 'Applications'],
+    'employment_types' => [
+        'full_time' => 'Full-time',
+        'part_time' => 'Part-time',
+        'temporary' => 'Temporary',
+        'student' => 'Student job',
+        'internship' => 'Internship',
+        'freelance' => 'Freelance',
+    ],
+    'sections' => [
+        'contact' => 'Contact person',
+        'applications' => 'Applications',
+        'candidate' => 'Candidate',
+    ],
+    'fields' => [
+        'title' => 'Job title',
+        'intro' => 'Short description',
+        'description' => 'Job description',
+        'requirements' => 'Profile / requirements',
+        'offer' => 'What we offer',
+        'image' => 'Main photo',
+        'employment_type' => 'Contract type',
+        'closes_at' => 'Apply until',
+        'no_deadline' => 'No deadline',
+        'notify_emails' => 'Send applications to',
+        'motivation' => 'Motivation',
+        'cv' => 'CV',
+    ],
+    'help' => [
+        'intro' => 'One or two sentences for the overview and search engines.',
+        'offer' => 'Optional: salary, benefits, training, …',
+        'images' => 'Photos of the workplace, the team or projects. Max. 12, JPG/PNG/WebP up to 4 MB. Drag to reorder.',
+        'image' => 'Shown on the overview card and behind the title. Empty = logo.',
+        'contact' => 'Shown next to the vacancy. Empty = the website\'s general phone number and e-mail address.',
+        'notify_emails' => 'Every address receives the application with the CV attached. Press Enter after each address. Empty = the addresses in Website settings > Contact details.',
+        'visible' => 'Hidden or closed vacancies do not appear on the website. Without visible vacancies, the "Jobs" link disappears too.',
+        'closes_at' => 'After this date the vacancy disappears from the website automatically. Empty = no deadline.',
+        'slug' => 'Part of the web address, e.g. /en/vacancies/electrician. Lowercase letters, digits and hyphens only.',
+        'closed' => 'Closed: no longer visible on the website.',
+        'empty' => 'No vacancies yet',
+        'empty_description' => 'As soon as a vacancy is visible, "Jobs" appears in the website menu.',
+        'no_applications' => 'No applications yet',
+    ],
+    'actions' => [
+        'download_cv' => 'Download CV',
+    ],
+    'settings' => [
+        'vacancy_emails' => 'Send applications to',
+        'vacancy_emails_help' => 'Default addresses for applications, for vacancies without their own addresses. Press Enter after each address. Empty = the contact form address.',
+    ],
+];

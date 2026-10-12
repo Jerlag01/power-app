@@ -3,7 +3,7 @@
 How to install the Power Installation website (public site in NL/FR/EN plus the `/admin` panel) on a new server, from an empty machine to a working HTTPS site.
 
 - **Stack:** Laravel 13, Filament 5, PHP 8.4, MySQL/MariaDB, nginx, Vite/Tailwind for the front-end build.
-- **Example names in this guide:** domain `www.example.be`, install path `/var/www/power-app`, database `power`, database user `power`. Replace them with your own values.
+- **Example names in this guide:** domain `www.example.be`, install path `/usr/share/nginx/html/power-app`, database `power`, database user `power`. Replace them with your own values.
 - All commands run as `root` unless they start with `sudo -u www-data`.
 
 ---
@@ -85,15 +85,23 @@ If the database runs on another server, create the user as `'power'@'<web server
 The app has its own repository: **https://github.com/Jerlag01/power-app** (branch `main`).
 
 ```bash
-mkdir -p /var/www
-git clone https://github.com/Jerlag01/power-app.git /var/www/power-app
-cd /var/www/power-app
-git config --global --add safe.directory /var/www/power-app    # lets root run git in this folder later (it is owned by www-data)
+mkdir -p /usr/share/nginx/html
+git clone https://github.com/Jerlag01/power-app.git /usr/share/nginx/html/power-app
+cd /usr/share/nginx/html/power-app
+git config --global --add safe.directory /usr/share/nginx/html/power-app    # lets root run git in this folder later (it is owned by www-data)
 ```
 
 The repository is private: use a GitHub deploy key (read-only, recommended for a server) or a personal access token for the clone.
 
-Updates from the admin panel (section 14.1) run git as the `www-data` user, so that user needs read access too. For example, put the deploy key in `/var/www/.ssh/`, the home folder of `www-data`, owned by `www-data` with mode 600. Test it with `sudo -u www-data git -C /var/www/power-app ls-remote origin`.
+Updates from the admin panel (section 14.1) run git as the `www-data` user, so that user needs read access too. With an SSH remote (`git@github.com:…`), put the deploy key inside the app and point the updater to it. The updater does not use the home folder of `www-data`:
+
+```bash
+install -d -o www-data -g www-data -m 700 /usr/share/nginx/html/power-app/storage/app/updater
+install -o www-data -g www-data -m 600 deploy_key /usr/share/nginx/html/power-app/storage/app/updater/deploy_key
+echo 'UPDATER_SSH_KEY=storage/app/updater/deploy_key' >> /usr/share/nginx/html/power-app/.env
+```
+
+`storage/app` is never served by the website. Test the access with `sudo -u www-data php8.4 artisan app:update --check` (section 14.2).
 
 Not in git (and therefore created during the install): `.env`, `vendor/`, `node_modules/`, `public/build/`, `public/storage` and everything uploaded to `storage/`.
 
@@ -104,7 +112,7 @@ Not in git (and therefore created during the install): `.env`, `vendor/`, `node_
 ## 5. Configuration (`.env`)
 
 ```bash
-cd /var/www/power-app
+cd /usr/share/nginx/html/power-app
 cp .env.example .env
 nano .env
 ```
@@ -148,7 +156,16 @@ MAIL_FROM_NAME="${APP_NAME}"
 
 Notes:
 - `QUEUE_CONNECTION=sync`: the app sends its e-mails (contact form, job applications) directly, so no queue worker is needed.
-- Optional, for the updater (section 14): `UPDATER_REMOTE` (default `origin`), `UPDATER_BRANCH` (default: the branch that is checked out), `UPDATER_COMPOSER` and `UPDATER_NPM`. Set the last two to the full path only when composer or npm is not found in `/usr/local/bin` or `/usr/bin`.
+- Optional, for the updater (section 14):
+
+  | Key | Default | Meaning |
+  |---|---|---|
+  | `UPDATER_PHP` | `php8.4` | PHP binary for **every** update step (artisan, composer). Must be the version PHP-FPM serves the site with; the System update page warns when they differ. A name (`php8.4`) or a full path (`/usr/bin/php8.4`) |
+  | `UPDATER_REMOTE` | `origin` | git remote to update from |
+  | `UPDATER_BRANCH` | the checked-out branch | branch to follow |
+  | `UPDATER_CACHE_PATH` | `storage/app/updater/cache` | home folder and composer/npm caches of the update steps. It stays inside the app, so the home folder of `www-data` (often a root-owned `/var/www`) is never used |
+  | `UPDATER_SSH_KEY` | – | deploy key for an SSH remote (section 4) |
+  | `UPDATER_COMPOSER`, `UPDATER_NPM` | found in `/usr/local/bin`, `/usr/bin` | full path, only when not found there |
 - `SESSION_SECURE_COOKIE=true` requires HTTPS (step 10). While testing over plain HTTP, set it to `false`.
 - `APP_KEY` is filled in by the next step. **Keep it safe**: the SMTP password stored in the admin settings is encrypted with it.
 
@@ -157,7 +174,7 @@ Notes:
 ## 6. Install the application
 
 ```bash
-cd /var/www/power-app
+cd /usr/share/nginx/html/power-app
 
 # PHP dependencies (production: without dev tools)
 composer install --no-dev --optimize-autoloader --no-interaction
@@ -194,7 +211,7 @@ php8.4 artisan db:seed --force
 The app has no sign-up page. Create the first admin with the `power:create-user` command:
 
 ```bash
-cd /var/www/power-app
+cd /usr/share/nginx/html/power-app
 php8.4 artisan power:create-user
 ```
 
@@ -219,21 +236,21 @@ The password is always asked for interactively, so it never ends up in the shell
 The web server (PHP-FPM runs as `www-data`) must be able to write to `storage/` and `bootstrap/cache/`. The whole folder, `.git` included, must belong to `www-data`, because updates from the admin panel run as that user:
 
 ```bash
-chown -R www-data:www-data /var/www/power-app
-find /var/www/power-app/storage /var/www/power-app/bootstrap/cache -type d -exec chmod 775 {} \;
+chown -R www-data:www-data /usr/share/nginx/html/power-app
+find /usr/share/nginx/html/power-app/storage /usr/share/nginx/html/power-app/bootstrap/cache -type d -exec chmod 775 {} \;
 ```
 
 Run every later `artisan` command as root, then repeat the `chown` above. Alternatively run artisan as the web user (`sudo -u www-data php8.4 artisan …`), which avoids files owned by root.
 
-### PHP-FPM sandbox (only when you hit a 500 with "read-only file system")
+### PHP-FPM sandbox (required for this install path)
 
-Some setups run php-fpm with systemd `ProtectSystem=full`, which makes `/usr` read-only. That is a problem when the app lives under `/usr/share/nginx/html/…`. Under `/var/www` it does not apply. If you do use such a path, allow writing to the two folders:
+Ubuntu and Debian run php8.4-fpm with systemd `ProtectSystem=full`, which makes everything under `/usr` read-only for PHP. Without this drop-in the site gives a 500 error ("read-only file system"). Allow writing to the two folders Laravel needs:
 
 ```bash
 mkdir -p /etc/systemd/system/php8.4-fpm.service.d
 cat > /etc/systemd/system/php8.4-fpm.service.d/power-app-writable.conf <<'EOF'
 [Service]
-ReadWritePaths=/usr/share/nginx/html/devops/power-app/storage /usr/share/nginx/html/devops/power-app/bootstrap/cache
+ReadWritePaths=/usr/share/nginx/html/power-app/storage /usr/share/nginx/html/power-app/bootstrap/cache
 EOF
 systemctl daemon-reload && systemctl restart php8.4-fpm
 ```
@@ -260,7 +277,7 @@ server {
     listen 80;
     listen [::]:80;
     server_name www.example.be example.be;
-    root /var/www/power-app/public;
+    root /usr/share/nginx/html/power-app/public;
 
     index index.php;
     charset utf-8;
@@ -323,10 +340,10 @@ certbot adds the certificate lines and the HTTP→HTTPS redirect to the nginx co
 ### 11.1 Caches
 
 ```bash
-cd /var/www/power-app
+cd /usr/share/nginx/html/power-app
 php8.4 artisan optimize          # config, routes, views, events cache
 php8.4 artisan filament:optimize # Filament component + icon cache
-chown -R www-data:www-data /var/www/power-app
+chown -R www-data:www-data /usr/share/nginx/html/power-app
 systemctl restart php8.4-fpm     # clears OPcache
 ```
 
@@ -341,7 +358,7 @@ crontab -u www-data -e
 ```
 
 ```cron
-* * * * * cd /var/www/power-app && php8.4 artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /usr/share/nginx/html/power-app && php8.4 artisan schedule:run >> /dev/null 2>&1
 ```
 
 Check it:
@@ -353,7 +370,7 @@ sudo -u www-data php8.4 artisan schedule:list     # lists "updater-heartbeat" an
 
 Within a minute, **System update** in the admin panel shows the scheduler as **Running**.
 
-> Use the same PHP version as the website (`php8.4`), and put the line in the crontab of `www-data`, **not** root: as root, an update would leave root-owned files behind.
+> Put the line in the crontab of `www-data`, **not** root: as root, an update would leave root-owned files behind. The PHP in the cron line only starts the scheduler; the update steps themselves always use `UPDATER_PHP` (default `php8.4`).
 
 ---
 
@@ -418,8 +435,8 @@ On the **new** server, follow sections 1–6 but:
 
 ```bash
 mysql -u power -p power < /tmp/power.sql
-tar xzf /tmp/power-uploads.tgz -C /var/www/power-app/storage/app
-cd /var/www/power-app
+tar xzf /tmp/power-uploads.tgz -C /usr/share/nginx/html/power-app/storage/app
+cd /usr/share/nginx/html/power-app
 php8.4 artisan migrate --force
 php8.4 artisan storage:link
 php8.4 artisan cache:clear
@@ -439,7 +456,7 @@ Before every update:
 - Make sure nobody changed files on the server itself; every update method refuses to overwrite them:
 
   ```bash
-  cd /var/www/power-app
+  cd /usr/share/nginx/html/power-app
   git status --short --untracked-files=no     # must print nothing
   ```
 
@@ -471,7 +488,7 @@ The admin panel cannot update the code itself: PHP-FPM may not write the code fo
 The same update as 14.1, started by hand. Always run it as `www-data`:
 
 ```bash
-cd /var/www/power-app
+cd /usr/share/nginx/html/power-app
 sudo -u www-data php8.4 artisan app:update --check   # read-only: installed and remote commit, update available or not
 sudo -u www-data php8.4 artisan app:update           # update now
 ```
@@ -479,14 +496,17 @@ sudo -u www-data php8.4 artisan app:update           # update now
 `app:update` performs these steps and stops at the first one that fails:
 
 1. Refuse when tracked files were changed on the server.
-2. `git fetch` the branch. Nothing new: stop here ("Already up to date").
-3. `artisan down` (maintenance page).
-4. `git merge --ff-only` to the new commit.
-5. `composer install --optimize-autoloader` (with `--no-dev` when `APP_ENV=production`) and republish the Livewire assets.
-6. `npm ci` when `package.json`/`package-lock.json` changed; `npm run build` when the front-end changed.
-7. `artisan migrate --force`.
-8. `artisan optimize` + `filament:optimize` in production, or clear those caches in development.
-9. `artisan up`.
+2. Refuse when a file it has to replace is not owned by the owner of the app folder (`www-data`), e.g. a `vendor/` installed as root. This is checked **before** anything changes, so a permission problem never leaves a half-updated site. The error lists the files and the `chown` that fixes it.
+3. `git fetch` the branch. Nothing new: stop here ("Already up to date").
+4. `artisan down` (maintenance page).
+5. `git merge --ff-only` to the new commit.
+6. `composer install --optimize-autoloader` (with `--no-dev` when `APP_ENV=production`, with the dev tools otherwise) and republish the Livewire assets.
+7. `npm ci` when `package.json`/`package-lock.json` changed; `npm run build` when the front-end changed.
+8. `artisan migrate --force`.
+9. `artisan optimize` + `filament:optimize` in production, or clear those caches in development.
+10. `artisan up`.
+
+Every `artisan` and `composer` step runs with the PHP from `UPDATER_PHP` (default `php8.4`), whichever PHP started the command. Composer and npm keep their caches in `storage/app/updater/cache`. `--check` also shows which PHP is used and any ownership problems.
 
 The result also appears on the **System update** page. The command refuses to run as root, because pulled files would become root-owned; `--allow-root` overrides that, but then run the `chown` from section 8 afterwards. A php8.4-fpm restart is not needed: OPcache notices the changed files by itself (unless `opcache.validate_timestamps` was switched off).
 
@@ -495,7 +515,7 @@ The result also appears on the **System update** page. The command refuses to ru
 Without cron, without Node.js on the server, or to install one tagged release:
 
 ```bash
-cd /var/www/power-app
+cd /usr/share/nginx/html/power-app
 git rev-parse --short HEAD                      # note the current version, for a rollback
 php8.4 artisan down                             # maintenance page
 git fetch --tags origin
@@ -506,7 +526,7 @@ npm ci && npm run build
 php8.4 artisan vendor:publish --tag=livewire:assets --force
 php8.4 artisan migrate --force
 php8.4 artisan optimize && php8.4 artisan filament:optimize
-chown -R www-data:www-data /var/www/power-app
+chown -R www-data:www-data /usr/share/nginx/html/power-app
 systemctl restart php8.4-fpm                    # clears OPcache
 php8.4 artisan up
 ```
@@ -518,13 +538,13 @@ php8.4 artisan up
 The version before an update is in the log on the **System update** page (`abc1234 → def5678`: use `abc1234`), or the one you noted in 14.3.
 
 ```bash
-cd /var/www/power-app
+cd /usr/share/nginx/html/power-app
 php8.4 artisan down
 git reset --hard <the version noted before the update>    # stays on the main branch
 composer install --no-dev --optimize-autoloader --no-interaction
 npm ci && npm run build
 php8.4 artisan optimize && php8.4 artisan filament:optimize
-chown -R www-data:www-data /var/www/power-app
+chown -R www-data:www-data /usr/share/nginx/html/power-app
 systemctl restart php8.4-fpm
 php8.4 artisan up
 ```
@@ -538,17 +558,17 @@ Database changes are **not** undone by this. When the update ran new migrations,
 For installs that still come from `JLTechologies/Stock-Rewrite`:
 
 ```bash
-cd /var/www
+cd /usr/share/nginx/html
 php8.4 power-app/artisan down
 git clone https://github.com/Jerlag01/power-app.git power-app-new
 cp power-app/.env power-app-new/.env                                      # keeps APP_KEY and the database settings
 cp -a power-app/storage/app/. power-app-new/storage/app/                  # uploads
 mv power-app power-app-old && mv power-app-new power-app                          # replaces the symlink/folder
 cd power-app
-git config --global --add safe.directory /var/www/power-app
+git config --global --add safe.directory /usr/share/nginx/html/power-app
 ```
 
-Then run section 6 without `key:generate` and without `db:seed`, then sections 8 and 11. The nginx root (`/var/www/power-app/public`) stays the same. When everything works, remove `/var/www/power-app-old`.
+Then run section 6 without `key:generate` and without `db:seed`, then sections 8 and 11. The nginx root (`/usr/share/nginx/html/power-app/public`) stays the same. When everything works, remove `/usr/share/nginx/html/power-app-old`.
 
 ---
 
@@ -584,8 +604,11 @@ Back up these things; everything else can be rebuilt from git:
 | Update **Failed**: *Local changes would be overwritten* | Files were edited on the server: see "Before every update" in section 14 |
 | Update **Failed**: *Do not run the update as root* | Run it with `sudo -u www-data …`; the cron line belongs in the crontab of `www-data`, not root |
 | Update **Failed** at *Fetching* / "Check failed" | No access to GitHub: network, or `www-data` has no deploy key / token (section 4) |
-| Update **Failed** at *Pulling* with "Permission denied" or "unable to unlink" | Root-owned files: `chown -R www-data:www-data /var/www/power-app` (section 8) and update again |
+| Update **Failed**: *These files are not owned by www-data* | Something was installed or edited as root (often `vendor/` or `node_modules/`). Run the `chown -R www-data:www-data /usr/share/nginx/html/power-app` from the message and update again. Nothing was changed yet |
+| Update **Failed** at *Installing PHP packages* with "does not exist and could not be created" | Same cause, on an older version of the updater: `chown -R www-data:www-data /usr/share/nginx/html/power-app`, then update again |
+| Update **Failed**: *PHP binary "php8.4" was not found* / page shows a PHP mismatch | Set `UPDATER_PHP` in `.env` to the PHP version of the website (`php8.4` or the full path from `which php8.4`) |
 | Update **Failed**: composer / npm *was not found* | Set `UPDATER_COMPOSER` / `UPDATER_NPM` in `.env` to the full path (`which composer`, `which npm`), then `php8.4 artisan optimize` |
+| "Cannot create cache directory /var/www/.cache/composer" | Older version of the updater: it now keeps its caches in `storage/app/updater/cache` (`UPDATER_CACHE_PATH`) |
 | Everyone gets "Access denied" | A block covers the IP of a proxy or load balancer in front of the server: remove it in System > Blocked IP addresses, and configure Laravel's trusted proxies so the real visitor IP is used |
 | Site still in maintenance after a crash | `sudo -u www-data php8.4 artisan up` |
 

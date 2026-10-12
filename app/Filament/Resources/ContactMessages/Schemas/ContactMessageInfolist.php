@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources\ContactMessages\Schemas;
 
+use App\Models\BlockedIp;
+use App\Models\ContactMessage;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\FontFamily;
 
 class ContactMessageInfolist
 {
@@ -44,6 +47,14 @@ class ContactMessageInfolist
                         TextEntry::make('created_at')
                             ->label(__('admin.fields.received_at'))
                             ->dateTime('d/m/Y H:i'),
+                        TextEntry::make('ip_address')
+                            ->label(__('blocked_ips.fields.ip_address'))
+                            ->placeholder('-')
+                            ->fontFamily(FontFamily::Mono)
+                            ->copyable()
+                            ->badge(fn (ContactMessage $record): bool => BlockedIp::matching($record->ip_address) !== null)
+                            ->color(fn (ContactMessage $record): ?string => BlockedIp::matching($record->ip_address) !== null ? 'danger' : null)
+                            ->helperText(fn (ContactMessage $record): ?string => BlockedIp::matching($record->ip_address) !== null ? __('blocked_ips.status.blocked') : null),
                     ])
                     ->columnSpan(['lg' => 1]),
             ]);

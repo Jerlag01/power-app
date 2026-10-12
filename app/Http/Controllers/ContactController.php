@@ -22,6 +22,7 @@ class ContactController extends Controller
         $contactMessage = ContactMessage::create([
             ...$request->safe()->except(['privacy', 'website']),
             'locale' => app()->getLocale(),
+            'ip_address' => $request->ip(),
         ]);
 
         if ($recipient = settings('contact.notify_email')) {

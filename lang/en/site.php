@@ -136,7 +136,7 @@ return [
         'controller_title' => 'Data controller',
         'controller_text' => ':controller is responsible for processing your personal data through this website.',
         'data_title' => 'What data do we process?',
-        'data_text' => 'When you use the contact form, we process your name, email address, phone number (optional) and the content of your message.',
+        'data_text' => 'When you use the contact form, we process your name, email address, phone number (optional) and the content of your message. To prevent abuse of the website, we also store the IP address from which the form was sent.',
         'why_title' => 'Why?',
         'why_text' => 'Solely to answer your question and, if requested, to prepare a quote. We do not sell or share your data with third parties for commercial purposes.',
         'retention_title' => 'Retention',
@@ -179,5 +179,9 @@ return [
             'cv_type' => 'Your CV must be a PDF or Word file.',
             'cv_size' => 'Your CV may not be larger than 10 MB.',
         ],
+    ],
+    'blocked' => [
+        'title' => 'Access denied',
+        'message' => 'Due to your behaviour on our website, your access to our site has been limited.',
     ],
 ];

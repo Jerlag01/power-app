@@ -19,6 +19,7 @@ class Permissions
         'vacancies' => ['view', 'create', 'update', 'delete'],
         'job_applications' => ['view', 'update', 'delete'],
         'contact_messages' => ['view', 'update', 'delete'],
+        'blocked_ips' => ['view', 'create', 'update', 'delete'],
         'users' => ['view', 'create', 'update', 'delete'],
         'roles' => ['view', 'create', 'update', 'delete'],
         'settings' => ['general', 'contact', 'mail', 'appearance'],

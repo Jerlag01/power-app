@@ -5,14 +5,15 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\VacancyController;
+use App\Http\Middleware\BlockBlockedIps;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [PageController::class, 'redirectToLocale']);
+Route::get('/', [PageController::class, 'redirectToLocale'])->middleware(BlockBlockedIps::class);
 
 Route::prefix('{locale}')
     ->whereIn('locale', array_keys(config('app.locales')))
-    ->middleware(SetLocale::class)
+    ->middleware([BlockBlockedIps::class, SetLocale::class])
     ->group(function () {
         Route::get('/', [PageController::class, 'home'])->name('home');
         Route::get('/expertises', [PageController::class, 'expertises'])->name('expertises');

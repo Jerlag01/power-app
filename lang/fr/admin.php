@@ -41,6 +41,7 @@ return [
             'projects' => 'Réalisations',
             'expertises' => 'Expertises',
             'contact_messages' => 'Messages de contact',
+            'blocked_ips' => 'Adresses IP bloquées',
             'users' => 'Utilisateurs',
             'roles' => 'Rôles',
             'settings' => 'Paramètres du site',

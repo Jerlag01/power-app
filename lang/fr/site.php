@@ -136,7 +136,7 @@ return [
         'controller_title' => 'Responsable du traitement',
         'controller_text' => ':controller est responsable du traitement de vos données personnelles via ce site web.',
         'data_title' => 'Quelles données traitons-nous ?',
-        'data_text' => 'Lorsque vous utilisez le formulaire de contact, nous traitons votre nom, votre adresse e-mail, votre numéro de téléphone (facultatif) et le contenu de votre message.',
+        'data_text' => 'Lorsque vous utilisez le formulaire de contact, nous traitons votre nom, votre adresse e-mail, votre numéro de téléphone (facultatif) et le contenu de votre message. Afin de prévenir les abus du site web, nous conservons également l\'adresse IP depuis laquelle le formulaire a été envoyé.',
         'why_title' => 'Pourquoi ?',
         'why_text' => 'Uniquement pour répondre à votre demande et, le cas échéant, établir un devis. Nous ne vendons ni ne partageons vos données avec des tiers à des fins commerciales.',
         'retention_title' => 'Durée de conservation',
@@ -179,5 +179,9 @@ return [
             'cv_type' => 'Votre CV doit être un fichier PDF ou Word.',
             'cv_size' => 'Votre CV ne peut pas dépasser 10 Mo.',
         ],
+    ],
+    'blocked' => [
+        'title' => 'Accès refusé',
+        'message' => 'En raison de votre comportement sur notre site web, votre accès à notre site a été limité.',
     ],
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ContactMessages\Pages;
 
+use App\Filament\Resources\BlockedIps\BlockIpAction;
 use App\Filament\Resources\ContactMessages\ContactMessageResource;
 use App\Models\ContactMessage;
 use Filament\Actions\Action;
@@ -41,6 +42,7 @@ class ViewContactMessage extends ViewRecord
                     $this->record->forceFill(['read_at' => null])->save();
                     $this->redirect(ContactMessageResource::getUrl('index'));
                 }),
+            BlockIpAction::forContactMessage(),
             DeleteAction::make(),
         ];
     }

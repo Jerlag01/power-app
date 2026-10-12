@@ -136,7 +136,7 @@ return [
         'controller_title' => 'Verantwoordelijke',
         'controller_text' => ':controller is verantwoordelijk voor de verwerking van uw persoonsgegevens via deze website.',
         'data_title' => 'Welke gegevens verwerken wij?',
-        'data_text' => 'Wanneer u het contactformulier gebruikt, verwerken wij uw naam, e-mailadres, telefoonnummer (optioneel) en de inhoud van uw bericht.',
+        'data_text' => 'Wanneer u het contactformulier gebruikt, verwerken wij uw naam, e-mailadres, telefoonnummer (optioneel) en de inhoud van uw bericht. Om misbruik van de website te voorkomen, bewaren wij daarbij ook het IP-adres van waaruit het formulier werd verstuurd.',
         'why_title' => 'Waarom?',
         'why_text' => 'Uitsluitend om uw vraag te beantwoorden en, indien gevraagd, een offerte op te maken. Wij verkopen of delen uw gegevens niet met derden voor commerciële doeleinden.',
         'retention_title' => 'Bewaartermijn',
@@ -179,5 +179,9 @@ return [
             'cv_type' => 'Je cv moet een PDF- of Word-bestand zijn.',
             'cv_size' => 'Je cv mag maximaal 10 MB groot zijn.',
         ],
+    ],
+    'blocked' => [
+        'title' => 'Toegang geweigerd',
+        'message' => 'Door uw gedrag op onze website is uw toegang tot onze site beperkt.',
     ],
 ];

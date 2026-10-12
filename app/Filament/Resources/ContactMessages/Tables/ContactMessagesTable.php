@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ContactMessages\Tables;
 
+use App\Filament\Resources\BlockedIps\BlockIpAction;
 use App\Models\ContactMessage;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
@@ -9,6 +10,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Support\Enums\FontFamily;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -47,6 +49,12 @@ class ContactMessagesTable
                     ->badge()
                     ->color('gray')
                     ->toggleable(),
+                TextColumn::make('ip_address')
+                    ->label(__('blocked_ips.fields.ip_address'))
+                    ->fontFamily(FontFamily::Mono)
+                    ->placeholder('-')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->label(__('admin.fields.received_at'))
                     ->dateTime('d/m/Y H:i')
@@ -66,6 +74,7 @@ class ContactMessagesTable
                     ->icon(Heroicon::OutlinedArrowUturnLeft)
                     ->color('gray')
                     ->url(fn (ContactMessage $record): string => 'mailto:'.$record->email.'?subject='.rawurlencode('Re: '.$record->subject)),
+                BlockIpAction::forContactMessage(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([

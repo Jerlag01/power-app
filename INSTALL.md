@@ -388,6 +388,12 @@ The panel uses each user's own language (set per user, and in the profile menu).
     - "Who is who", "Footer links", "Vacancies" and "Applications" have their own permissions: tick them for every role that may manage them.
     - Applications contain CVs (personal data), so only give "Applications" to people who handle recruitment.
 11. **System > System update** (super admins only): see section 14.1.
+12. **System > Blocked IP addresses:** visitors whose IP address is on this list see an "Access denied" page (HTTP 410) instead of the public website. The admin panel stays reachable, so you cannot lock yourself out.
+    - Each entry is one address (`203.0.113.7`, IPv6 works too) or a range (`203.0.113.0/24`; ranges wider than /16 for IPv4 or /32 for IPv6 are refused).
+    - Optional: an internal reason, an end date after which the block stops by itself, and an on/off switch to pause a block without deleting it.
+    - The list shows how many visits were refused and when the last one was. **Unblock** deletes the entry.
+    - Every contact message stores the sender's IP address (shown under Sender, never in the e-mail). The **Block IP** button on a message opens this form already filled in.
+    - Permission area "Blocked IP addresses"; not given to the Editor role.
 
 The public website is at `https://www.example.be/nl` (also `/fr` and `/en`).
 
@@ -580,6 +586,7 @@ Back up these things; everything else can be rebuilt from git:
 | Update **Failed** at *Fetching* / "Check failed" | No access to GitHub: network, or `www-data` has no deploy key / token (section 4) |
 | Update **Failed** at *Pulling* with "Permission denied" or "unable to unlink" | Root-owned files: `chown -R www-data:www-data /var/www/power-app` (section 8) and update again |
 | Update **Failed**: composer / npm *was not found* | Set `UPDATER_COMPOSER` / `UPDATER_NPM` in `.env` to the full path (`which composer`, `which npm`), then `php8.4 artisan optimize` |
+| Everyone gets "Access denied" | A block covers the IP of a proxy or load balancer in front of the server: remove it in System > Blocked IP addresses, and configure Laravel's trusted proxies so the real visitor IP is used |
 | Site still in maintenance after a crash | `sudo -u www-data php8.4 artisan up` |
 
 Logs: `storage/logs/laravel.log` (application), `/var/log/nginx/power-app.error.log` (nginx), `journalctl -u php8.4-fpm` (PHP-FPM). The log of the last update is on the **System update** page and in `storage/app/updater/last-run.json`.

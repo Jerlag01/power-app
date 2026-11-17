@@ -1,4 +1,4 @@
-<x-layouts.app :title="$post->translate('title')" :description="$post->summary()">
+<x-layouts.app :title="$post->translate('title')" :description="$post->summary()" :image="$post->image" type="article" :schema="[\App\Support\Seo::article($post)]">
     <article>
         <header class="relative overflow-hidden bg-gradient-to-br from-navy-950 to-navy-700 text-white">
             <div class="bg-grid absolute inset-0" aria-hidden="true"></div>

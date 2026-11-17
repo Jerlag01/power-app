@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * Site-wide settings managed from the admin panel, stored per group
- * (general, contact, mail, appearance) in the settings table.
+ * (general, contact, mail, appearance, seo) in the settings table.
  */
 class Settings
 {
@@ -103,6 +103,17 @@ class Settings
                 'favicon' => null,
                 'hero_image' => null,
                 'custom_css' => null,
+            ],
+            // Search engines and visitor statistics (Settings → Search engines).
+            'seo' => [
+                'indexable' => true,
+                'description' => ['nl' => null, 'fr' => null, 'en' => null],
+                'share_image' => null,
+                'google_verification' => null,
+                'bing_verification' => null,
+                'stats_enabled' => true,
+                'stats_exclude_logged_in' => true,
+                'stats_retention_days' => 730,
             ],
         ];
     }

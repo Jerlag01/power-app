@@ -4,12 +4,17 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\VacancyController;
 use App\Http\Middleware\BlockBlockedIps;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'redirectToLocale'])->middleware(BlockBlockedIps::class);
+
+// Generated for search engines (no static public/robots.txt): see SeoController.
+Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 
 Route::prefix('{locale}')
     ->whereIn('locale', array_keys(config('app.locales')))

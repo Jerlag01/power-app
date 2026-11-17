@@ -1,4 +1,4 @@
-<x-layouts.app :title="$project->translate('title')" :description="$project->translate('summary')">
+<x-layouts.app :title="$project->translate('title')" :description="$project->translate('summary')" :image="$project->image">
     <x-page-hero :eyebrow="$project->expertise?->translate('title') ?? __('site.nav.projects')" :title="$project->translate('title')">
         {{ $project->translate('summary') }}
     </x-page-hero>

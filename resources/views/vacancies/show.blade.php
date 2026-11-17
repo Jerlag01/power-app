@@ -10,7 +10,7 @@
     ]);
 @endphp
 
-<x-layouts.app :title="$title" :description="$vacancy->translate('intro')">
+<x-layouts.app :title="$title" :description="$vacancy->translate('intro')" :image="$vacancy->image" :schema="$vacancy->isClosed() ? [] : [\App\Support\Seo::jobPosting($vacancy)]">
     <header class="relative overflow-hidden bg-gradient-to-br from-navy-950 to-navy-700 text-white">
         @if ($imageUrl = $vacancy->imageUrl())
             <img src="{{ $imageUrl }}" alt="" class="absolute inset-0 h-full w-full object-cover">

@@ -20,9 +20,11 @@ class Permissions
         'job_applications' => ['view', 'update', 'delete'],
         'contact_messages' => ['view', 'update', 'delete'],
         'blocked_ips' => ['view', 'create', 'update', 'delete'],
+        'seo_tags' => ['view', 'create', 'update', 'delete'],
+        'statistics' => ['view'],
         'users' => ['view', 'create', 'update', 'delete'],
         'roles' => ['view', 'create', 'update', 'delete'],
-        'settings' => ['general', 'contact', 'mail', 'appearance'],
+        'settings' => ['general', 'contact', 'mail', 'appearance', 'seo'],
     ];
 
     /**

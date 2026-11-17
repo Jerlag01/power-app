@@ -1,24 +1,12 @@
-@props(['title' => null, 'description' => null])
-
-@php
-    $siteName = settings('general.site_name');
-    $route = request()->route();
-@endphp
+@props(['title' => null, 'description' => null, 'image' => null, 'type' => 'website', 'schema' => [], 'noindex' => false])
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="{{ $description ?? $siteName.' - '.settings()->translated('general.tagline') }}">
-
-        <title>{{ $title ? $title.' | '.$siteName : $siteName.' - '.settings()->translated('general.tagline') }}</title>
-
-        @if ($route?->getName())
-            @foreach (array_keys(config('app.locales')) as $locale)
-                <link rel="alternate" hreflang="{{ $locale }}" href="{{ route($route->getName(), [...$route->parameters(), 'locale' => $locale]) }}">
-            @endforeach
-        @endif
+        {{-- Title, description, robots, canonical, languages, Open Graph, Twitter, JSON-LD and the SEO tags of the admin panel. --}}
+        {{ \App\Support\Seo::head($title, $description, $image, $type, (bool) $noindex, $schema) }}
 
         @if ($favicon = settings()->faviconUrl())
             <link rel="icon" href="{{ $favicon }}">

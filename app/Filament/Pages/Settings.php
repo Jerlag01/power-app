@@ -12,8 +12,8 @@ use Filament\Forms\Components\Field;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
@@ -98,6 +98,10 @@ class Settings extends Page
                             ->visible(fn (): bool => static::canEdit('appearance'))
                             ->icon(Heroicon::OutlinedSwatch)
                             ->schema($this->appearanceFields()),
+                        Tab::make(__('admin.settings.tabs.seo'))
+                            ->visible(fn (): bool => static::canEdit('seo'))
+                            ->icon(Heroicon::OutlinedMagnifyingGlass)
+                            ->schema($this->seoFields()),
                     ]),
             ]);
     }
@@ -134,6 +138,10 @@ class Settings extends Page
             foreach (['logo', 'favicon', 'hero_image'] as $image) {
                 $this->deleteReplacedImage($settings->get("appearance.{$image}"), $data['appearance'][$image] ?? null);
             }
+        }
+
+        if (static::canEdit('seo')) {
+            $this->deleteReplacedImage($settings->get('seo.share_image'), $data['seo']['share_image'] ?? null);
         }
 
         // Only groups the user may edit are saved, whatever the request contains.
@@ -409,6 +417,81 @@ class Settings extends Page
 
     /**
      * @return array<Component|Field>
+     */
+    /**
+     * Search engines (indexing, default description, share image, verification codes) and the visitor statistics.
+     *
+     * @return array<Component>
+     */
+    protected function seoFields(): array
+    {
+        return [
+            Section::make(__('admin.settings.sections.indexing'))
+                ->description(__('admin.settings.help.indexing', ['env' => app()->environment()]))
+                ->schema([
+                    Toggle::make('seo.indexable')
+                        ->label(__('admin.settings.fields.indexable'))
+                        ->helperText(__('admin.settings.help.indexable')),
+                ]),
+            TranslatableTabs::make(fn (string $locale, bool $isDefault): array => [
+                Textarea::make("seo.description.{$locale}")
+                    ->label(__('admin.settings.fields.seo_description'))
+                    ->helperText(__('admin.settings.help.seo_description'))
+                    ->rows(2)
+                    ->maxLength(300),
+            ]),
+            Section::make(__('admin.settings.sections.share_image'))
+                ->description(__('admin.settings.help.share_image'))
+                ->schema([
+                    FileUpload::make('seo.share_image')
+                        ->hiddenLabel()
+                        ->image()
+                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                        ->maxSize(4096)
+                        ->disk('public')
+                        ->directory('seo')
+                        ->visibility('public')
+                        ->imageEditor()
+                        ->imagePreviewHeight('120'),
+                ]),
+            Section::make(__('admin.settings.sections.verification'))
+                ->description(__('admin.settings.help.verification'))
+                ->columns(2)
+                ->schema([
+                    TextInput::make('seo.google_verification')
+                        ->label(__('admin.settings.fields.google_verification'))
+                        ->placeholder('abc123…')
+                        ->maxLength(200)
+                        ->regex('/^[A-Za-z0-9_\-.]+$/'),
+                    TextInput::make('seo.bing_verification')
+                        ->label(__('admin.settings.fields.bing_verification'))
+                        ->placeholder('1A2B3C…')
+                        ->maxLength(200)
+                        ->regex('/^[A-Za-z0-9_\-.]+$/'),
+                ]),
+            Section::make(__('admin.settings.sections.statistics'))
+                ->description(__('admin.settings.help.statistics'))
+                ->columns(2)
+                ->schema([
+                    Toggle::make('seo.stats_enabled')
+                        ->label(__('admin.settings.fields.stats_enabled')),
+                    Toggle::make('seo.stats_exclude_logged_in')
+                        ->label(__('admin.settings.fields.stats_exclude_logged_in')),
+                    TextInput::make('seo.stats_retention_days')
+                        ->label(__('admin.settings.fields.stats_retention_days'))
+                        ->helperText(__('admin.settings.help.stats_retention_days'))
+                        ->numeric()
+                        ->integer()
+                        ->minValue(30)
+                        ->maxValue(3650)
+                        ->required()
+                        ->suffix(__('admin.settings.days')),
+                ]),
+        ];
+    }
+
+    /**
+     * @return array<Component>
      */
     protected function appearanceFields(): array
     {

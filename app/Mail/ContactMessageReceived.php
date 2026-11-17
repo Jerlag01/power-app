@@ -2,44 +2,37 @@
 
 namespace App\Mail;
 
+use App\Enums\MailTemplateKey;
+use App\Filament\Resources\ContactMessages\ContactMessageResource;
 use App\Models\ContactMessage;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
+use App\Support\MailTemplates;
 use Illuminate\Mail\Mailables\Address;
-use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Queue\SerializesModels;
 
-class ContactMessageReceived extends Mailable
+/**
+ * A message of the contact form, to the address of Settings → Contact. Text: the "contact message" template,
+ * in the site's main language; replying goes to the sender.
+ */
+class ContactMessageReceived extends SystemMail
 {
-    use Queueable, SerializesModels;
-
-    /**
-     * Create a new message instance.
-     */
     public function __construct(public ContactMessage $contactMessage)
     {
-        //
+        parent::__construct(MailTemplateKey::ContactMessage, MailTemplates::defaultLocale(), [
+            'name' => $contactMessage->name,
+            'email' => $contactMessage->email,
+            'phone' => $contactMessage->phone ?: '—',
+            'subject' => $contactMessage->subject,
+            'message' => MailTemplates::quote($contactMessage->message),
+            'language' => strtoupper((string) $contactMessage->locale) ?: '—',
+            'admin_url' => rescue(fn (): string => ContactMessageResource::getUrl(), url('/admin'), false),
+        ]);
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
             replyTo: [new Address($this->contactMessage->email, $this->contactMessage->name)],
-            subject: 'Nieuw contactbericht: '.$this->contactMessage->subject,
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            markdown: 'mail.contact-message-received',
+            subject: $this->rendered['subject'],
         );
     }
 }

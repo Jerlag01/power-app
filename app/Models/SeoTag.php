@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -75,8 +76,15 @@ class SeoTag extends Model
     {
         $path = '/'.trim($path, '/');
 
-        /** @var Collection<int, SeoTag> $tags */
-        $tags = Cache::rememberForever(self::CACHE_KEY, fn (): Collection => static::query()->where('is_active', true)->ordered()->get());
+        try {
+            /** @var Collection<int, SeoTag> $tags */
+            $tags = Cache::rememberForever(self::CACHE_KEY, fn (): Collection => static::query()->where('is_active', true)->ordered()->get());
+        } catch (QueryException $exception) {
+            // E.g. right after an update whose migration has not run yet: the pages keep working with the automatic tags.
+            report($exception);
+
+            return new Collection;
+        }
 
         return $tags
             ->filter(fn (SeoTag $tag): bool => ($tag->locale === null || $tag->locale === $locale) && $tag->matches($path))

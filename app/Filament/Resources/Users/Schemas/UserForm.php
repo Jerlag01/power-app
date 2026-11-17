@@ -7,7 +7,9 @@ use App\Models\User;
 use Closure;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rules\Password;
@@ -53,12 +55,22 @@ class UserForm
                             ->options(config('app.locales'))
                             ->default(config('app.locale'))
                             ->required(),
+                        // A new user normally gets the welcome mail and chooses a password there.
+                        Toggle::make('send_welcome')
+                            ->label(__('mail_templates.welcome.send'))
+                            ->helperText(__('mail_templates.welcome.send_help'))
+                            ->default(true)
+                            ->live()
+                            ->dehydrated(false)
+                            ->visibleOn('create')
+                            ->columnSpanFull(),
                         TextInput::make('password')
                             ->label(__('admin.fields.password'))
                             ->password()
                             ->revealable()
                             ->rule(Password::default())
-                            ->required(fn (string $operation): bool => $operation === 'create')
+                            ->required(fn (string $operation, Get $get): bool => $operation === 'create' && ! $get('send_welcome'))
+                            ->visible(fn (string $operation, Get $get): bool => $operation === 'edit' || ! $get('send_welcome'))
                             ->dehydrated(fn (?string $state): bool => filled($state))
                             ->helperText(fn (string $operation): ?string => $operation === 'edit' ? __('admin.help.password') : null),
                     ]),

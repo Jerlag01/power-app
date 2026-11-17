@@ -44,6 +44,7 @@ return [
             'blocked_ips' => 'Adresses IP bloquées',
             'seo_tags' => 'Balises SEO',
             'statistics' => 'Statistiques',
+            'mail_templates' => "Modèles d'e-mail",
             'users' => 'Utilisateurs',
             'roles' => 'Rôles',
             'settings' => 'Paramètres du site',

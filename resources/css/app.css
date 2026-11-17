@@ -74,7 +74,7 @@
 }
 
 .animate-marquee {
-    animation: marquee 40s linear infinite;
+    animation: marquee var(--marquee-duration, 40s) linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -84,8 +84,9 @@
         transition: none;
     }
 
+    /* The client strip keeps moving, only slower. */
     .animate-marquee {
-        animation: none;
+        animation-duration: calc(var(--marquee-duration, 40s) * 2);
     }
 }
 

@@ -59,24 +59,32 @@
         </div>
     </section>
 
-    {{-- Client marquee --}}
+    {{-- Client marquee: keeps running (no pause on hover/tap). One half holds the clients repeated until it is wider
+         than a wide screen, so the strip never runs out; the second half is the same, so moving it by exactly half loops
+         seamlessly. The speed is the same whatever the number of clients. --}}
     @if ($clients->isNotEmpty())
+        @php
+            $strip = collect(range(1, max(1, (int) ceil(12 / $clients->count()))))->flatMap(fn () => $clients)->values();
+        @endphp
         <section class="overflow-hidden border-b border-line bg-steel py-6" aria-label="{{ __('site.hero.clients') }}">
-            <div class="animate-marquee flex w-max items-center gap-16 hover:[animation-play-state:paused]">
-                {{-- The list is rendered twice so the strip loops seamlessly; the copy is hidden from screen readers. --}}
-                @foreach ([$clients, $clients] as $copy)
-                    @foreach ($copy as $client)
-                        <span class="flex items-center gap-16" @if ($loop->parent->index === 1) aria-hidden="true" @endif>
-                            @if ($client->url)
-                                <a href="{{ $client->url }}" target="_blank" rel="noopener nofollow" @if ($loop->parent->index === 1) tabindex="-1" @endif class="transition hover:opacity-100">
+            <div class="animate-marquee flex w-max" style="--marquee-duration: {{ $strip->count() * 4 }}s">
+                @foreach ([0, 1] as $half)
+                    <div class="flex shrink-0 items-center gap-16 pr-16" @if ($half === 1) aria-hidden="true" @endif>
+                        @foreach ($strip as $client)
+                            {{-- Only the first appearance of each client is read out and reachable with the keyboard. --}}
+                            @php($duplicate = $half === 1 || $loop->index >= $clients->count())
+                            <span class="flex items-center gap-16" @if ($duplicate && $half === 0) aria-hidden="true" @endif>
+                                @if ($client->url)
+                                    <a href="{{ $client->url }}" target="_blank" rel="noopener nofollow" @if ($duplicate) tabindex="-1" @endif class="transition hover:opacity-100">
+                                        <x-client-mark :client="$client" />
+                                    </a>
+                                @else
                                     <x-client-mark :client="$client" />
-                                </a>
-                            @else
-                                <x-client-mark :client="$client" />
-                            @endif
-                            <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
-                        </span>
-                    @endforeach
+                                @endif
+                                <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+                            </span>
+                        @endforeach
+                    </div>
                 @endforeach
             </div>
         </section>

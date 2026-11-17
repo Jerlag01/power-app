@@ -32,7 +32,20 @@ class ClientsAndFaviconTest extends TestCase
             ->assertDontSee('Verborgen Klant');
     }
 
-    public function test_client_strip_is_hidden_without_clients(): void
+    public function test_the_client_strip_is_long_enough_to_keep_running_without_gaps(): void
+    {
+        Client::factory()->create(['name' => 'Klant Een', 'sort_order' => 1]);
+        Client::factory()->create(['name' => 'Klant Twee', 'sort_order' => 2]);
+
+        $html = $this->get('/nl')->assertOk()->getContent();
+
+        // Two clients: repeated to 12 per half, both halves the same; one constant speed (4 s per logo).
+        $this->assertSame(24, substr_count($html, 'Klant Een') + substr_count($html, 'Klant Twee'));
+        $this->assertStringContainsString('--marquee-duration: 48s', $html);
+        $this->assertStringNotContainsString('animation-play-state:paused', $html);
+    }
+
+        public function test_client_strip_is_hidden_without_clients(): void
     {
         $this->get('/nl')->assertOk()->assertDontSee('animate-marquee');
     }

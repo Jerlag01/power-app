@@ -6,11 +6,15 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SeoController;
 use App\Http\Controllers\VacancyController;
+use App\Http\Controllers\WelcomeLinkController;
 use App\Http\Middleware\BlockBlockedIps;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'redirectToLocale'])->middleware(BlockBlockedIps::class);
+
+// The link in the welcome mail of a new admin user: signed, valid for 7 days, and only until the password is set.
+Route::get('/welcome/{user}', WelcomeLinkController::class)->whereNumber('user')->middleware('signed')->name('welcome');
 
 // Generated for search engines (no static public/robots.txt): see SeoController.
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');

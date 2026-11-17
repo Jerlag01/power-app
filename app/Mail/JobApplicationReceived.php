@@ -2,45 +2,39 @@
 
 namespace App\Mail;
 
+use App\Enums\MailTemplateKey;
+use App\Filament\Resources\JobApplications\JobApplicationResource;
 use App\Models\JobApplication;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
+use App\Support\MailTemplates;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Attachment;
-use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Queue\SerializesModels;
 
-class JobApplicationReceived extends Mailable
+/**
+ * An application for a vacancy, with the CV attached. Text: the "job application" template, in the site's
+ * main language; replying goes to the candidate.
+ */
+class JobApplicationReceived extends SystemMail
 {
-    use Queueable, SerializesModels;
-
-    /**
-     * Create a new message instance.
-     */
     public function __construct(public JobApplication $application)
     {
-        //
+        parent::__construct(MailTemplateKey::JobApplication, MailTemplates::defaultLocale(), [
+            'vacancy' => $application->vacancy_title,
+            'name' => $application->name,
+            'email' => $application->email,
+            'phone' => $application->phone ?: '—',
+            'message' => MailTemplates::quote($application->message),
+            'language' => strtoupper((string) $application->locale) ?: '—',
+            'cv_name' => $application->cv_name,
+            'admin_url' => rescue(fn (): string => JobApplicationResource::getUrl(), url('/admin'), false),
+        ]);
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
             replyTo: [new Address($this->application->email, $this->application->name)],
-            subject: 'Nieuwe sollicitatie: '.$this->application->vacancy_title.' - '.$this->application->name,
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            markdown: 'mail.job-application-received',
+            subject: $this->rendered['subject'],
         );
     }
 

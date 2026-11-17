@@ -22,6 +22,7 @@ class Permissions
         'blocked_ips' => ['view', 'create', 'update', 'delete'],
         'seo_tags' => ['view', 'create', 'update', 'delete'],
         'statistics' => ['view'],
+        'mail_templates' => ['view', 'update'],
         'users' => ['view', 'create', 'update', 'delete'],
         'roles' => ['view', 'create', 'update', 'delete'],
         'settings' => ['general', 'contact', 'mail', 'appearance', 'seo'],

@@ -167,6 +167,7 @@ class AdminContentTest extends TestCase
                 'email' => 'redacteur@example.com',
                 'role_id' => $role->getKey(),
                 'locale' => 'fr',
+                'send_welcome' => false,
                 'password' => 'Sterk-Wachtwoord-123',
             ])
             ->call('create')

@@ -44,6 +44,7 @@ return [
             'blocked_ips' => 'Blocked IP addresses',
             'seo_tags' => 'SEO tags',
             'statistics' => 'Statistics',
+            'mail_templates' => 'E-mail templates',
             'users' => 'Users',
             'roles' => 'Roles',
             'settings' => 'Website settings',

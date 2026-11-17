@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Vacancy;
 use App\Support\Settings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -39,6 +40,13 @@ class SeoTest extends TestCase
             ->assertSee('<meta name="twitter:card"', false)
             ->assertSee('"@type":["Organization","Electrician"]', false)
             ->assertHeaderMissing('X-Robots-Tag');
+    }
+
+    public function test_pages_keep_working_when_the_seo_tags_table_is_missing(): void
+    {
+        Schema::drop('seo_tags');
+
+        $this->get('/nl')->assertOk()->assertSee('<meta name="description"', false);
     }
 
     public function test_development_sites_and_switched_off_indexing_are_noindex(): void

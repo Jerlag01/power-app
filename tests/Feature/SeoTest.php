@@ -11,7 +11,9 @@ use App\Models\SeoTag;
 use App\Models\User;
 use App\Models\Vacancy;
 use App\Support\Settings;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -40,6 +42,22 @@ class SeoTest extends TestCase
             ->assertSee('<meta name="twitter:card"', false)
             ->assertSee('"@type":["Organization","Electrician"]', false)
             ->assertHeaderMissing('X-Robots-Tag');
+    }
+
+    public function test_the_tags_are_cached_as_plain_rows_and_survive_a_second_request(): void
+    {
+        // Like the server: values are serialized, and objects may not come back out of the cache.
+        config(['cache.default' => 'array', 'cache.stores.array.serialize' => true, 'cache.serializable_classes' => false]);
+        Cache::forgetDriver('array');
+        SeoTag::factory()->create(['type' => 'meta', 'key' => 'keywords', 'value' => 'laadpalen']);
+        // A model collection left in the cache by the previous version is replaced instead of breaking the page.
+        Cache::forever(SeoTag::CACHE_KEY, new Collection([new SeoTag]));
+
+        foreach ([1, 2] as $request) {
+            $this->get('/nl')->assertOk()->assertSee('<meta name="keywords" content="laadpalen">', false);
+        }
+
+        $this->assertIsArray(Cache::get(SeoTag::CACHE_KEY));
     }
 
     public function test_pages_keep_working_when_the_seo_tags_table_is_missing(): void

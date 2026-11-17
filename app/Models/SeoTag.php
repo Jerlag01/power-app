@@ -77,8 +77,7 @@ class SeoTag extends Model
         $path = '/'.trim($path, '/');
 
         try {
-            /** @var Collection<int, SeoTag> $tags */
-            $tags = Cache::rememberForever(self::CACHE_KEY, fn (): Collection => static::query()->where('is_active', true)->ordered()->get());
+            $tags = static::hydrate(self::cachedRows());
         } catch (QueryException $exception) {
             // E.g. right after an update whose migration has not run yet: the pages keep working with the automatic tags.
             report($exception);
@@ -90,6 +89,25 @@ class SeoTag extends Model
             ->filter(fn (SeoTag $tag): bool => ($tag->locale === null || $tag->locale === $locale) && $tag->matches($path))
             ->sortBy(fn (SeoTag $tag): array => [$tag->path === null ? 0 : (str_contains($tag->path, '*') ? 1 : 2), $tag->sort_order, $tag->id])
             ->values();
+    }
+
+    /**
+     * The active tags as plain rows: the cache only stores arrays (cache.serializable_classes is off, so a cached
+     * model collection would come back as an unusable incomplete object). Anything else in the cache, e.g. left by
+     * an older version, is replaced.
+     *
+     * @return list<array<string, mixed>>
+     */
+    protected static function cachedRows(): array
+    {
+        $rows = Cache::get(self::CACHE_KEY);
+
+        if (! is_array($rows) || ($rows !== [] && ! is_array(reset($rows)))) {
+            $rows = static::query()->where('is_active', true)->ordered()->get()->map(fn (SeoTag $tag): array => $tag->getAttributes())->values()->all();
+            Cache::forever(self::CACHE_KEY, $rows);
+        }
+
+        return $rows;
     }
 
     public function matches(string $path): bool
